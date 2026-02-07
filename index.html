@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>С днём рождения!!!</title>
+  <style>
+    html, body { height: 100%; margin: 0; overflow: hidden; background: radial-gradient(circle at top, #2b1055, #000); }
+    .wrap { height: 100%; display: grid; place-items: center; text-align: center; padding: 24px; }
+    h1 {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: clamp(36px, 7vw, 88px);
+      letter-spacing: 1px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,255,255,.5), 0 0 30px rgba(255,120,255,.45);
+      animation: glow 1.8s ease-in-out infinite alternate;
+      margin: 0;
+      user-select: none;
+    }
+    @keyframes glow { from { transform: scale(1); } to { transform: scale(1.03); } }
+    canvas { position: fixed; inset: 0; }
+    .hint { color: rgba(255,255,255,.7); margin-top: 14px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div class="wrap">
+    <div>
+      <h1>С днём рождения!!!</h1>
+      <div class="hint">✨ Кликни/тапни — больше конфетти ✨</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let W, H, dpr;
+
+    function resize(){
+      dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      W = canvas.width = Math.floor(innerWidth * dpr);
+      H = canvas.height = Math.floor(innerHeight * dpr);
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+    }
+    addEventListener('resize', resize); resize();
+
+    const colors = ["#ff4d6d","#ffd166","#06d6a0","#4cc9f0","#c77dff","#f72585","#ffffff"];
+    const confetti = [];
+
+    function spawn(n, x = W/2, y = H/4){
+      for(let i=0;i<n;i++){
+        confetti.push({
+          x, y,
+          vx: (Math.random()*2-1) * 6 * dpr,
+          vy: (Math.random()*-1 - 1) * 10 * dpr,
+          g: (Math.random()*0.18 + 0.12) * dpr,
+          r: (Math.random()*6 + 4) * dpr,
+          rot: Math.random()*Math.PI,
+          vr: (Math.random()*2-1)*0.15,
+          c: colors[(Math.random()*colors.length)|0],
+          life: 0,
+          max: (Math.random()*180 + 140)|0
+        });
+      }
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+
+      // лёгкие "звёзды"
+      for(let i=0;i<120;i++){
+        const x = (i*97) % W, y = (i*193) % H;
+        const a = 0.12 + 0.25*Math.abs(Math.sin((Date.now()/900)+i));
+        ctx.fillStyle = `rgba(255,255,255,${a})`;
+        ctx.fillRect(x, y, 1*dpr, 1*dpr);
+      }
+
+      for(let i=confetti.length-1;i>=0;i--){
+        const p = confetti[i];
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life++;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+        ctx.restore();
+
+        if(p.y > H + 40*dpr || p.life > p.max) confetti.splice(i,1);
+      }
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // стартовый салют
+    spawn(220, W/2, H/3);
+
+    // по клику — больше
+    addEventListener('pointerdown', (e)=> {
+      const x = e.clientX * dpr, y = e.clientY * dpr;
+      spawn(180, x, y);
+    });
+
+    // периодически подсыпать
+    setInterval(()=> spawn(50, Math.random()*W, H/5), 900);
+  </script>
+</body>
+</html>
