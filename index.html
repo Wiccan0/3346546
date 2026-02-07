@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ru">
 <head>
@@ -222,6 +221,7 @@
       font-size: 14px;
       min-height: 84px;
       position:relative;
+      white-space: pre-wrap;
     }
     .cursor{
       display:inline-block;
@@ -256,13 +256,6 @@
       filter: drop-shadow(0 0 30px rgba(77,247,255,.12));
     }
 
-    .hint{
-      opacity:.86;
-      font-size: 14px;
-      line-height:1.55;
-      margin: 10px 0 0;
-    }
-
     .footer{
       margin-top:14px;
       display:flex;
@@ -272,13 +265,6 @@
       justify-content:space-between;
       opacity:.9;
       font-size: 13px;
-    }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      border:1px solid rgba(255,255,255,.2);
-      background: rgba(0,0,0,.18);
-      padding:2px 7px;
-      border-radius:8px;
     }
 
     /* canvas поверх */
@@ -359,7 +345,6 @@
 
           <div class="actions">
             <button class="primary" id="boomBtn">Запустить конфетти ✨</button>
-            <button id="surpriseBtn">Сюрприз 🎁</button>
             <!-- ВСТАВЬ СВОЮ ССЫЛКУ НИЖЕ (например, на фото/плейлист/подарок) -->
             <a class="btn" href="https://example.com" target="_blank" rel="noopener">Открыть подарок ↗</a>
           </div>
@@ -380,7 +365,6 @@
 
             <div class="footer">
               <div>Кликни по экрану — будут <b>фейерверки</b> 🎆</div>
-              <div>Горячие клавиши: <span class="kbd">B</span> конфетти, <span class="kbd">S</span> сюрприз</div>
             </div>
           </div>
 
@@ -428,10 +412,6 @@
                 <path d="M52 222 C86 252, 234 252, 268 222" stroke="url(#g1)" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
               </svg>
             </div>
-            <p class="hint">
-              Подсказка: нажми <b>“Запустить конфетти”</b>, а потом кликай по экрану —
-              будут фейерверки. Если хочешь “вау” — включи звук (ниже в коде есть опция).
-            </p>
           </aside>
         </section>
       </div>
@@ -595,7 +575,6 @@
     // Interaction
     // -------------------------
     const boomBtn = document.getElementById('boomBtn');
-    const surpriseBtn = document.getElementById('surpriseBtn');
     const modal = document.getElementById('modal');
     const closeModal = document.getElementById('closeModal');
     const fireworksNow = document.getElementById('fireworksNow');
@@ -622,26 +601,13 @@
       if (Math.random() < 0.35) addConfettiBurst(e.clientX, e.clientY, 60);
     }, {passive:true});
 
-    // модалка
-    function openModal(){
-      modal.classList.add('open');
-      // чуть конфетти при открытии
-      addConfettiBurst(innerWidth*0.5, innerHeight*0.22, 140);
-    }
+    // модалка (останется, но без кнопки "Сюрприз" не откроется)
     function close(){
       modal.classList.remove('open');
     }
-    surpriseBtn.addEventListener('click', openModal);
     closeModal.addEventListener('click', close);
     modal.addEventListener('click', (e)=>{ if(e.target === modal) close(); });
     fireworksNow.addEventListener('click', centerBurst);
-
-    // hotkeys
-    addEventListener('keydown', (e)=>{
-      if(e.key.toLowerCase()==='b') boomBtn.click();
-      if(e.key.toLowerCase()==='s') surpriseBtn.click();
-      if(e.key === 'Escape') close();
-    });
 
     // -------------------------
     // OPTIONAL: музыка (по желанию)
@@ -657,4 +623,3 @@
   </script>
 </body>
 </html>
-
