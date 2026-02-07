@@ -32,7 +32,6 @@
         linear-gradient(160deg, var(--bg1), var(--bg2));
     }
 
-    /* движущиеся "пятна" света */
     .aurora{
       position:fixed; inset:-20%;
       background:
@@ -50,7 +49,6 @@
       100%{ transform: translate3d(3%, 2%, 0) rotate(6deg) scale(1.12);}
     }
 
-    /* звездочки */
     .stars{
       position:fixed; inset:0;
       background-image:
@@ -69,7 +67,6 @@
       50%{opacity:.45}
     }
 
-    /* контейнер */
     .wrap{
       position:relative;
       height:100%;
@@ -224,7 +221,6 @@
       white-space: pre-wrap;
     }
 
-    /* ✅ ИСПРАВЛЕНИЕ: чтобы первая строка не "плавала" и не выглядела кривой */
     #typed{
       display:block;
       white-space: pre-wrap;
@@ -258,7 +254,6 @@
       padding:6px 0 10px;
     }
 
-    /* минималистичный "неоновый" тортик SVG */
     .cake svg{
       width:min(280px, 100%);
       filter: drop-shadow(0 0 30px rgba(77,247,255,.12));
@@ -275,14 +270,12 @@
       font-size: 13px;
     }
 
-    /* canvas поверх */
     canvas#fx{
       position:fixed; inset:0;
       pointer-events:none;
       z-index: 5;
     }
 
-    /* маленькое модальное окно-сюрприз */
     .modal{
       position:fixed; inset:0;
       display:none;
@@ -327,7 +320,6 @@
       position:relative;
     }
 
-    /* доступность */
     .sr-only{
       position:absolute;
       width:1px;height:1px;
@@ -398,23 +390,19 @@
                   </filter>
                 </defs>
 
-                <!-- свеча -->
                 <path d="M160 18 C150 35, 170 35, 160 18 Z" fill="url(#g1)" filter="url(#glow)"/>
                 <rect x="152" y="34" width="16" height="44" rx="8" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.35)"/>
                 <path d="M152 50 H168" stroke="rgba(255,255,255,.45)" stroke-width="3" stroke-linecap="round"/>
                 <path d="M152 62 H168" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/>
 
-                <!-- верхний корж -->
                 <rect x="70" y="82" width="180" height="54" rx="18" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.22)"/>
                 <path d="M88 110 C110 128, 130 92, 152 110 C174 128, 194 92, 216 110"
                       stroke="url(#g1)" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
 
-                <!-- нижний корж -->
                 <rect x="52" y="134" width="216" height="74" rx="22" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.2)"/>
                 <path d="M78 168 C106 196, 128 142, 156 170 C184 198, 206 142, 234 170"
                       stroke="url(#g1)" stroke-width="7" stroke-linecap="round" filter="url(#glow)"/>
 
-                <!-- тарелка -->
                 <path d="M36 216 C70 244, 250 244, 284 216" stroke="rgba(255,255,255,.22)" stroke-width="10" stroke-linecap="round"/>
                 <path d="M52 222 C86 252, 234 252, 268 222" stroke="url(#g1)" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
               </svg>
@@ -427,18 +415,9 @@
             <h2 style="margin:0 0 12px;font-size:22px;">📸 Фотографии</h2>
 
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-              <div style="position:relative;">
-                <img data-full src="g1.png" alt="Фото 1" style="width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);cursor:pointer;" />
-                <a href="g1.png" download="g1.png" style="position:absolute;right:10px;bottom:10px;padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);color:var(--white);text-decoration:none;font-weight:700;font-size:12px;">Скачать</a>
-              </div>
-              <div style="position:relative;">
-                <img data-full src="g2.png" alt="Фото 2" style="width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);cursor:pointer;" />
-                <a href="g2.png" download="g2.png" style="position:absolute;right:10px;bottom:10px;padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);color:var(--white);text-decoration:none;font-weight:700;font-size:12px;">Скачать</a>
-              </div>
-              <div style="position:relative;">
-                <img data-full src="g3.png" alt="Фото 3" style="width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);cursor:pointer;" />
-                <a href="g3.png" download="g3.png" style="position:absolute;right:10px;bottom:10px;padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);color:var(--white);text-decoration:none;font-weight:700;font-size:12px;">Скачать</a>
-              </div>
+              <img data-full src="g1.png" alt="Фото 1" style="width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);cursor:pointer;" />
+              <img data-full src="g2.png" alt="Фото 2" style="width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);cursor:pointer;" />
+              <img data-full src="g3.png" alt="Фото 3" style="width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);cursor:pointer;" />
             </div>
 
             <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
@@ -451,12 +430,11 @@
     </main>
   </div>
 
-  <!-- ✅ полноэкранный просмотр фото -->
+  <!-- ✅ полноэкранный просмотр фото (без кнопок "Скачать" + фото видно целиком) -->
   <div id="photoModal" style="position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.78);z-index:999;padding:18px;">
-    <div style="position:relative;width:min(1200px,96vw);height:min(86vh,820px);display:grid;place-items:center;">
-      <img id="photoModalImg" alt="" style="max-width:100%;max-height:100%;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);" />
+    <div style="position:relative;width:min(1200px,96vw);height:min(88vh,900px);display:grid;place-items:center;">
+      <img id="photoModalImg" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);" />
       <button id="photoModalClose" class="btn" style="position:absolute;top:12px;right:12px;">Закрыть ✕</button>
-      <a id="photoModalDownload" class="btn" style="position:absolute;top:12px;left:12px;" download>Скачать ⬇</a>
     </div>
   </div>
 
@@ -475,9 +453,7 @@
   </div>
 
   <script>
-    // -------------------------
-    // Typed text (печать)
-    // -------------------------
+    // Typed text
     const typedEl = document.getElementById('typed');
     const lines = [
       "🎈 Желаю тебе счастья, которое не помещается в карман.",
@@ -488,7 +464,6 @@
       "",
       "С днём рождения, Мила! 🥳"
     ];
-
     let li = 0, ci = 0;
     function typeTick(){
       if (li >= lines.length) return;
@@ -504,9 +479,7 @@
     }
     typeTick();
 
-    // -------------------------
-    // Canvas FX: confetti + fireworks
-    // -------------------------
+    // Canvas FX
     const canvas = document.getElementById('fx');
     const ctx = canvas.getContext('2d');
     let W=0,H=0,dpr=1;
@@ -522,7 +495,6 @@
     addEventListener('resize', resize, {passive:true});
     resize();
 
-    // частицы
     const confetti = [];
     const sparks = [];
     const gravity = 0.08;
@@ -567,7 +539,6 @@
     function step(){
       ctx.clearRect(0,0,innerWidth,innerHeight);
 
-      // конфетти
       for(let i=confetti.length-1;i>=0;i--){
         const p = confetti[i];
         p.x += p.vx;
@@ -589,7 +560,6 @@
         if(p.y > innerHeight + 40 || p.life<=0) confetti.splice(i,1);
       }
 
-      // искры фейерверка
       for(let i=sparks.length-1;i>=0;i--){
         const s = sparks[i];
         s.x += s.vx;
@@ -613,9 +583,7 @@
     }
     requestAnimationFrame(step);
 
-    // -------------------------
     // Interaction
-    // -------------------------
     const boomBtn = document.getElementById('boomBtn');
     const modal = document.getElementById('modal');
     const closeModal = document.getElementById('closeModal');
@@ -628,22 +596,17 @@
 
     boomBtn.addEventListener('click', () => {
       addConfettiBurst(innerWidth*0.5, innerHeight*0.25, 260);
-      // маленькая "волна" сбоку
       setTimeout(()=>addConfettiBurst(innerWidth*0.25, innerHeight*0.35, 160), 120);
       setTimeout(()=>addConfettiBurst(innerWidth*0.75, innerHeight*0.35, 160), 240);
     });
 
-    // клик по экрану = фейерверк
     addEventListener('pointerdown', (e) => {
-      // не спамим по кнопкам/модалке
       const t = e.target;
       if (t && (t.closest('button') || t.closest('a') || t.closest('.modal'))) return;
       addFirework(e.clientX, e.clientY);
-      // немного конфетти для "искры"
       if (Math.random() < 0.35) addConfettiBurst(e.clientX, e.clientY, 60);
     }, {passive:true});
 
-    // модалка (останется, но без кнопки "Сюрприз" не откроется)
     function close(){
       modal.classList.remove('open');
     }
@@ -651,7 +614,7 @@
     modal.addEventListener('click', (e)=>{ if(e.target === modal) close(); });
     fireworksNow.addEventListener('click', centerBurst);
 
-    // ✅ ЛОГИКА "ВКЛАДОК": показываем/скрываем главный экран и фото по якорю
+    // Tabs
     const mainSection = document.getElementById('main');
     const photosSection = document.getElementById('photos');
 
@@ -670,30 +633,23 @@
     addEventListener('hashchange', renderTab);
     renderTab();
 
-    // ✅ полноэкранный просмотр фото
+    // ✅ fullscreen photo modal
     const photoModal = document.getElementById('photoModal');
     const photoModalImg = document.getElementById('photoModalImg');
     const photoModalClose = document.getElementById('photoModalClose');
-    const photoModalDownload = document.getElementById('photoModalDownload');
 
-    function openPhoto(src, filename){
+    function openPhoto(src){
       photoModalImg.src = src;
-      photoModalImg.alt = filename || 'Фото';
-      photoModalDownload.href = src;
-      photoModalDownload.setAttribute('download', filename || '');
       photoModal.style.display = 'grid';
     }
     function closePhoto(){
       photoModal.style.display = 'none';
       photoModalImg.src = '';
-      photoModalDownload.href = '';
     }
 
     document.querySelectorAll('img[data-full]').forEach(img=>{
       img.addEventListener('click', ()=>{
-        const src = img.getAttribute('src');
-        const filename = (src || '').split('/').pop();
-        openPhoto(src, filename);
+        openPhoto(img.getAttribute('src'));
       });
     });
 
@@ -701,15 +657,10 @@
     photoModal.addEventListener('click', (e)=>{ if(e.target === photoModal) closePhoto(); });
     addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closePhoto(); });
 
-    // -------------------------
-    // OPTIONAL: музыка (по желанию)
-    // 1) положи рядом файл music.mp3
-    // 2) раскомментируй блок ниже
-    // -------------------------
+    // OPTIONAL music
     /*
     const audio = new Audio('music.mp3');
     audio.loop = true;
-    // браузеры требуют жест пользователя:
     document.addEventListener('click', () => audio.play().catch(()=>{}), {once:true});
     */
   </script>
