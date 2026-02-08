@@ -586,7 +586,7 @@ body.photos-mode #openGiftBtn{display:none !important;}
 интересных книг,
 объездить весь мир,
 пройти путь сантьяго,
-стать популярным в соц
+стать популярной в соц
 сетях, создать тело
 своей мечты, завести
 собаку, научиться
@@ -626,7 +626,7 @@ body.photos-mode #openGiftBtn{display:none !important;}
             </p>
 
             <div class="type" aria-live="polite">
-              <span id="typed">Желаю тебе счастья, крепчайшего здоровья, море любви, бесконечной удачи, нескончаемого вдохновления, как можно больше 5‑ти тысячных купюр в твоем кошельке, меньше стресса и много секса!</span><span class="cursor"></span>
+              <span id="typed">Желаю тебе счастья, крепчайшего здоровья, море любви, бесконечной удачи, нескончаемого вдохновения, как можно больше 5‑ти тысячных купюр в твоем кошельке, меньше стресса и много секса!</span><span class="cursor"></span>
             </div>
 
             <div class="footer">
@@ -966,5 +966,21 @@ body.photos-mode #openGiftBtn{display:none !important;}
     photoModal.addEventListener('click', (e)=>{ if(e.target === photoModal) closePhoto(); });
     addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closePhoto(); });
   </script>
+
+<script>
+  // 🔀 Random shuffle photos
+  (function shufflePhotos(){
+    const grid = document.querySelector('.gridPhotos');
+    if (!grid) return;
+
+    const items = Array.from(grid.children);
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+    items.forEach(el => grid.appendChild(el));
+  })();
+</script>
+
 </body>
 </html>
