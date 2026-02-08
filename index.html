@@ -538,6 +538,51 @@ body.photos-mode #openGiftBtn{display:none !important;}
   .glitterLayer, .card, .card::after, .bow{animation:none !important;}
 }
 
+/* ===== Smooth UI transitions (new) ===== */
+html{ scroll-behavior: smooth; }
+
+.hero, #photos{
+  will-change: opacity, transform;
+}
+
+/* Cross-fade when switching tabs */
+.tabFadeIn{
+  animation: tabFadeIn .45s cubic-bezier(.18,.9,.2,1) both;
+}
+@keyframes tabFadeIn{
+  from{opacity:0; transform: translateY(10px) scale(.995);}
+  to{opacity:1; transform: translateY(0) scale(1);}
+}
+
+/* Modal (photo) smooth open/close */
+#photoModal{
+  opacity:0;
+  visibility:hidden;
+  transform: scale(1.01);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+#photoModal.open{
+  opacity:1;
+  visibility:visible;
+  transform: scale(1);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s;
+}
+#photoModal .btn{ transition: transform .12s ease, background .12s ease, border-color .12s ease; }
+
+/* Gentle hover “lift” for the whole card (desktop only) */
+@media (hover:hover) and (pointer:fine){
+  .card{ transition: transform .35s cubic-bezier(.18,.9,.2,1); }
+  .card:hover{ transform: translateY(-2px) scale(1.002); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  #photoModal{ transition:none !important; transform:none !important; }
+  .tabFadeIn{ animation:none !important; }
+  .card{ transition:none !important; }
+}
+
   </style>
 </head>
 <body>
@@ -761,7 +806,7 @@ body.photos-mode #openGiftBtn{display:none !important;}
     </main>
   </div>
 
-  <div id="photoModal" style="position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.78);z-index:999;padding:18px;">
+  <div id="photoModal" style="position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.78);z-index:999;padding:18px;">
     <div style="position:relative;width:min(1200px,96vw);max-height:88vh;display:grid;place-items:center;">
       <img id="photoModalImg" alt="" style="max-width:96vw;max-height:88vh;width:auto;height:auto;object-fit:contain;display:block;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);" />
       <button id="photoModalClose" class="btn" style="position:absolute;top:12px;right:12px;">Закрыть ✕</button>
@@ -923,6 +968,16 @@ body.photos-mode #openGiftBtn{display:none !important;}
     const mainSection = document.getElementById('main');
     const photosSection = document.getElementById('photos');
 
+
+    function animateIn(el){
+      if (!el) return;
+      el.classList.remove('tabFadeIn');
+      // restart CSS animation
+      void el.offsetWidth;
+      el.classList.add('tabFadeIn');
+    }
+
+
     function renderTab(){
       const openGiftBtn = document.getElementById('openGiftBtn');
 
@@ -932,11 +987,13 @@ body.photos-mode #openGiftBtn{display:none !important;}
         if (openGiftBtn) openGiftBtn.style.display = 'none';
         mainSection.style.display = 'none';
         photosSection.style.display = 'block';
+        animateIn(photosSection);
         document.body.style.overflowY = 'auto';
       } else {
         document.body.classList.remove('photos-mode');
         if (openGiftBtn) openGiftBtn.style.display = '';
         mainSection.style.display = 'grid';
+        animateIn(mainSection);
         photosSection.style.display = 'none';
         document.body.style.overflowY = 'hidden';
       }
@@ -951,11 +1008,12 @@ body.photos-mode #openGiftBtn{display:none !important;}
 
     function openPhoto(src){
       photoModalImg.src = src;
-      photoModal.style.display = 'grid';
+      photoModal.classList.add('open');
     }
     function closePhoto(){
-      photoModal.style.display = 'none';
-      photoModalImg.src = '';
+      photoModal.classList.remove('open');
+      // clear src after fade-out to avoid flash on reopen
+      setTimeout(()=>{ photoModalImg.src = ''; }, 180);
     }
 
     document.querySelectorAll('img[data-full]').forEach(img=>{
