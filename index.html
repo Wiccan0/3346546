@@ -1040,5 +1040,47 @@ html{ scroll-behavior: smooth; }
   })();
 </script>
 
+
+  <!-- 🎵 Background music -->
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="musicToggle" aria-label="Музыка"
+    style="
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:1000;
+      border-radius:50%;
+      width:56px;
+      height:56px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+    "
+    class="btn primary">
+    🔈
+  </button>
+
+<script>
+  const music = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicToggle');
+  let isPlaying = false;
+
+  btn.addEventListener('click', () => {
+    if (!isPlaying) {
+      music.volume = 0.5;
+      music.play();
+      btn.textContent = '🔊';
+    } else {
+      music.pause();
+      btn.textContent = '🔈';
+    }
+    isPlaying = !isPlaying;
+  });
+</script>
+
 </body>
 </html>
