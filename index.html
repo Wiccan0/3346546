@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>С Днём Рождения, Мила! 🎉</title>
+  <title>С днём рождения, Мила! 🎉</title>
   <meta name="theme-color" content="#0b0f1a" />
   <style>
     :root{
@@ -413,7 +413,6 @@
     }
   
 body.photos-mode #openGiftBtn{display:none !important;}
-body.photos-mode .iosPlayer{display:none !important;}
 
 
     /* second-page side note (visible only on photos tab) */
@@ -1607,6 +1606,34 @@ html{ scroll-behavior: smooth; }
   .glassBtn{ transition:none !important; }
 }
 
+
+/* Player behavior on Photos tab */
+
+/* Player centering on Photos tab */
+body.photos-mode .iosPlayer{
+  position: sticky;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  bottom: 16px;
+  margin: 16px auto;
+}
+
+body.photos-mode .iosPlayer{
+  position: sticky;
+  bottom: 16px;
+  margin: 16px auto;
+}
+/* Ensure photos content has space so player doesn't cover items */
+body.photos-mode .photosSection,
+body.photos-mode #photosSection{
+  padding-bottom: 140px;
+}
+
+
+/* When artist removed, keep title nicely balanced */
+.iosTitle{ font-size: 17px; }
+
 </style>
 </head>
 <body>
@@ -1677,7 +1704,7 @@ html{ scroll-behavior: smooth; }
         <div class="top">
           <div class="badge" title="Живые эффекты включены">
             <span class="dot"></span>
-            <span>С Днём Рождения</span>
+            <span>Нажми кнопочку</span>
           </div>
 
           <div class="actions">
@@ -1688,7 +1715,7 @@ html{ scroll-behavior: smooth; }
 
         <section class="hero" id="main">
           <div>
-            <h1 class="title">Мила, <span class="name">с Днём Рождения!</span> 🎂</h1>
+            <h1 class="title">Мила, <span class="name">Нажми кнопочку!</span> 🎂</h1>
             <p class="subtitle">
               Пусть этот год будет на вкус как твой любимый десерт: сладкий, яркий и с неожиданными
               приятностями на каждом шагу. Ты — космос. И сегодня у космоса праздник 🌌
@@ -2008,12 +2035,7 @@ html{ scroll-behavior: smooth; }
       const isPhotos = (location.hash || '').startsWith('#photos');
       if (isPhotos){
         document.body.classList.add('photos-mode');
-        // Hide player + stop music on Photos tab
-        const bgMusic = document.getElementById('bgMusic');
-        if (bgMusic){
-          bgMusic.pause();
-          bgMusic.currentTime = 0;
-        }
+        // Keep music playing on Photos tab
         if (openGiftBtn) openGiftBtn.style.display = 'none';
         mainSection.style.display = 'none';
         photosSection.style.display = 'block';
@@ -2082,9 +2104,8 @@ html{ scroll-behavior: smooth; }
       <div class="iosLeft">
         <div class="iosTopRow">
           <div class="iosMeta">
-            <p class="iosTitle"><span class="grad">С Днём Рождения</span></p>
-            <p class="iosArtist">Барбарики</p>
-          </div>
+            <p class="iosTitle"><span class="grad">нажми кнопочку)</span></p>
+</div>
           <div class="iosTime" aria-hidden="true">
             <span id="iosCur">0:00</span>
             <span style="opacity:.55">/</span>
@@ -2266,6 +2287,87 @@ html{ scroll-behavior: smooth; }
   syncTimes();
   setMuted(false);
   setPlayingUI(false);
+})();
+</script>
+
+
+<script>
+(function(){
+  function launchConfetti(){
+    const c = document.createElement('canvas');
+    c.style.position = 'fixed';
+    c.style.inset = '0';
+    c.style.pointerEvents = 'none';
+    c.style.zIndex = '2000';
+    document.body.appendChild(c);
+    const ctx = c.getContext('2d');
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    function resize(){
+      c.width = Math.floor(innerWidth * dpr);
+      c.height = Math.floor(innerHeight * dpr);
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    const colors = ['#ff4fd8','#4df7ff','#ffd66e','#ffffff'];
+    const parts = Array.from({length: 220}, ()=> ({
+      x: Math.random()*c.width,
+      y: -Math.random()*c.height,
+      r: Math.random()*6+4,
+      vy: Math.random()*3+2,
+      vx: (Math.random()-.5)*2,
+      rot: Math.random()*Math.PI,
+      vr: (Math.random()-.5)*0.2,
+      col: colors[Math.floor(Math.random()*colors.length)],
+      life: Math.random()*120+120
+    }));
+
+    let raf;
+    function tick(){
+      ctx.clearRect(0,0,c.width,c.height);
+      parts.forEach(p=>{
+        p.life--;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.vy += 0.02;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.col;
+        ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6);
+        ctx.restore();
+      });
+      for (let i=parts.length-1;i>=0;i--) if (parts[i].life<=0) parts.splice(i,1);
+      if (parts.length){
+        raf = requestAnimationFrame(tick);
+      }else{
+        cancelAnimationFrame(raf);
+        removeEventListener('resize', resize);
+        c.remove();
+      }
+    }
+    tick();
+  }
+
+  function bind(){
+    const btns = [];
+    btns.push(...document.querySelectorAll('[id*="confetti" i]'));
+    btns.push(...document.querySelectorAll('[class*="confetti" i]'));
+    btns.push(...Array.from(document.querySelectorAll('button,a')).filter(b=>/конфет|confetti/i.test(b.textContent||'')));
+    btns.forEach(b=>{
+      if (b.__confettiBound) return;
+      b.__confettiBound = true;
+      b.addEventListener('click', (e)=>{
+        e.preventDefault();
+        try{ if (typeof window.launchConfetti === 'function') window.launchConfetti(); }catch{}
+        launchConfetti();
+      }, {passive:true});
+    });
+  }
+
+  addEventListener('DOMContentLoaded', bind);
+  addEventListener('hashchange', bind);
 })();
 </script>
 
