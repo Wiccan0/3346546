@@ -431,7 +431,7 @@ img{image-orientation: from-image;}
             </div>
 
             <div class="footer">
-              <div>Кликни по экрану — будут <b>фейерверки</b> 🎆</div>
+              <div></div>
             </div>
           </div>
 
@@ -738,13 +738,6 @@ img{image-orientation: from-image;}
       setTimeout(()=>addConfettiBurst(innerWidth*0.25, innerHeight*0.35, 160), 120);
       setTimeout(()=>addConfettiBurst(innerWidth*0.75, innerHeight*0.35, 160), 240);
     });
-
-    addEventListener('pointerdown', (e) => {
-      const t = e.target;
-      if (t && (t.closest('button') || t.closest('a') || t.closest('.modal'))) return;
-      addFirework(e.clientX, e.clientY);
-      if (Math.random() < 0.35) addConfettiBurst(e.clientX, e.clientY, 60);
-    }, {passive:true});
 
     function close(){
       modal.classList.remove('open');
