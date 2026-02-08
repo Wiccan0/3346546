@@ -18,10 +18,9 @@
       --shadow: 0 20px 80px rgba(0,0,0,.55);
     }
 
-    
-html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
-*{box-sizing:border-box}
-    html,body{height:auto; min-height:100%}
+    *{box-sizing:border-box}
+    html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
+
     body{
       margin:0;
       font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Apple Color Emoji","Segoe UI Emoji";
@@ -46,6 +45,7 @@ html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
       mix-blend-mode: screen;
       animation: drift 16s ease-in-out infinite alternate;
       pointer-events:none;
+      will-change: transform, opacity;
     }
     @keyframes drift{
       0%{ transform: translate3d(-3%, -2%, 0) rotate(-6deg) scale(1.05);}
@@ -64,6 +64,7 @@ html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
       opacity:.35;
       pointer-events:none;
       animation: twinkle 6s ease-in-out infinite;
+      will-change: opacity;
     }
     @keyframes twinkle{
       0%,100%{opacity:.28}
@@ -105,6 +106,7 @@ html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
       opacity:.55;
       animation: glowSpin 10s linear infinite;
       pointer-events:none;
+      will-change: transform, opacity;
     }
     @keyframes glowSpin{to{transform: rotate(360deg)}}
 
@@ -139,6 +141,7 @@ html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
       background: radial-gradient(circle at 30% 30%, #fff, var(--cyan));
       box-shadow: 0 0 18px rgba(77,247,255,.8);
       animation: pulse 1.2s ease-in-out infinite;
+      will-change: transform, opacity;
     }
     @keyframes pulse{0%,100%{transform:scale(.9);opacity:.8}50%{transform:scale(1.2);opacity:1}}
 
@@ -282,124 +285,162 @@ html, body{height:auto; min-height:100%; overflow-y:auto; overflow-x:hidden;}
       z-index: 5;
     }
 
-    .modal{
+    /* ====== ЛЁГКИЕ “милые” эффекты (CSS, без лагов) ====== */
+    .cuteFx{
       position:fixed; inset:0;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.45);
-      z-index: 10;
+      pointer-events:none;
+      z-index:4;
+      overflow:hidden;
+    }
+    .float{
+      position:absolute;
+      left: var(--x, 50%);
+      top: 110%;
+      opacity: .0;
+      transform: translate(-50%, 0) rotate(var(--r, 0deg));
+      animation: floatUp var(--d, 12s) linear infinite;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
+      will-change: transform, opacity;
+    }
+    @keyframes floatUp{
+      0%{transform: translate(-50%, 0) rotate(var(--r, 0deg)) scale(.95); opacity:0}
+      8%{opacity: .9}
+      90%{opacity: .9}
+      100%{transform: translate(-50%, -140vh) rotate(calc(var(--r, 0deg) + 180deg)) scale(1.05); opacity:0}
+    }
+
+    .heart{
+      width: 18px; height: 18px;
+      background: rgba(255,79,216,.85);
+      transform: rotate(45deg);
+      border-radius: 4px;
+      position:relative;
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width: 18px; height: 18px;
+      background: rgba(255,79,216,.85);
+      border-radius: 50%;
+    }
+    .heart::before{ left:-9px; top:0;}
+    .heart::after{ left:0; top:-9px;}
+
+    .bow{
+      width: 22px; height: 14px;
+      position:relative;
+    }
+    .bow::before, .bow::after{
+      content:"";
+      position:absolute; top:0;
+      width: 12px; height: 14px;
+      background: rgba(77,247,255,.70);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 10px 12px 12px 10px;
+    }
+    .bow::before{left:0; transform: rotate(10deg)}
+    .bow::after{right:0; transform: scaleX(-1) rotate(10deg)}
+    .knot{
+      position:absolute; left:50%; top:50%;
+      width: 8px; height: 8px;
+      background: rgba(255,214,110,.85);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      border:1px solid rgba(255,255,255,.18);
+    }
+
+    .spark{
+      width: 10px; height: 10px;
+      position:relative;
+      opacity:.9;
+    }
+    .spark::before, .spark::after{
+      content:"";
+      position:absolute; left:50%; top:50%;
+      width: 10px; height: 2px;
+      background: rgba(255,214,110,.9);
+      transform: translate(-50%,-50%);
+      border-radius: 2px;
+    }
+    .spark::after{
+      width:2px; height:10px;
+    }
+
+    /* Photos section */
+    #photos{margin-top:18px;}
+    .photosBox{
+      border-radius:22px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
       padding:18px;
     }
-    .modal.open{display:grid}
-    .modal .box{
-      width:min(620px, 96vw);
-      border-radius:22px;
-      background: rgba(20,24,40,.85);
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      padding:18px 18px 14px;
-      position:relative;
-      overflow-x:hidden;
-      overflow-y:auto;
-    }
-    .modal .box::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(400px 200px at 20% 0%, rgba(255,79,216,.25), transparent 60%),
-                  radial-gradient(400px 200px at 80% 100%, rgba(77,247,255,.2), transparent 60%);
-      pointer-events:none;
-    }
-    .modal h2{
-      margin:0 0 8px;
-      font-size: 22px;
-      position:relative;
-    }
-    .modal p{
+    .photosTitle{
       margin:0 0 12px;
-      line-height:1.6;
-      opacity:.95;
-      position:relative;
+      font-size:22px;
+      text-align:center; /* ✅ камера по центру */
     }
-    .modal .row{
-      display:flex; gap:10px; flex-wrap:wrap;
-      justify-content:flex-end;
-      position:relative;
+    .gridPhotos{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    .thumb{
+      width:100%;
+      aspect-ratio: 4 / 3;
+      height:auto;
+      object-fit:cover;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .thumb:hover{transform: translateY(-2px); filter: brightness(1.05);}
+    .thumb:active{transform: translateY(0px) scale(.99);}
+
+    @media (min-width: 1100px){
+      .gridPhotos{grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px;}
+    }
+    @media (max-width: 700px){
+      .gridPhotos{grid-template-columns: repeat(2, minmax(0, 1fr));}
     }
 
-    .sr-only{
-      position:absolute;
-      width:1px;height:1px;
-      padding:0;margin:-1px;
-      overflow-x:hidden;
-      overflow-y:auto;clip:rect(0,0,0,0);
-      white-space:nowrap;border:0;
+    @media (prefers-reduced-motion: reduce){
+      .aurora, .stars, .dot, .card::before, .float{animation:none !important;}
+      button, a.btn{transition:none !important;}
+      .cursor{animation:none !important; opacity:.8;}
+      canvas#fx{display:none;}
     }
   
-
-/* ===== Desktop & laptop optimisation ===== */
-@media (min-width: 1024px){
-  .wrap{padding:40px;}
-  .inner{padding:36px 36px 30px;}
-  .hero{gap:24px; grid-template-columns: 1.2fr .8fr;}
-  .subtitle{font-size:18px; line-height:1.65; max-width: 62ch;}
-  .type{font-size:15px; min-height: 96px; padding:16px 16px;}
-  .cake svg{width:min(320px, 100%);}
-  button, a.btn{padding:12px 16px;}
-}
-
-img{image-orientation: from-image;}
-
-    body.photos-mode .wrap{place-items:start center; padding-top:32px;}
-
-
-/* Photos section (scales well from laptops to large monitors) */
-#photos{margin-top:18px;}
-.photosBox{
-  border-radius:22px;
-  background:rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.14);
-  padding:18px;
-}
-.photosTitle{margin:0 0 12px;font-size:22px;}
-.gridPhotos{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap:12px;
-}
-.thumb{
-  width:100%;
-  aspect-ratio: 4 / 3;
-  height:auto;
-  object-fit:cover;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.06);
-  cursor:pointer;
-  transition: transform .12s ease, filter .12s ease;
-}
-.thumb:hover{transform: translateY(-2px); filter: brightness(1.05);}
-.thumb:active{transform: translateY(0px) scale(.99);}
-
-@media (min-width: 1100px){
-  .gridPhotos{grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px;}
-}
-@media (max-width: 700px){
-  .gridPhotos{grid-template-columns: repeat(2, minmax(0, 1fr));}
-}
-
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce){
-  .aurora, .stars, .dot{animation:none !important;}
-  button, a.btn{transition:none !important;}
-  .card::before{animation:none !important;}
-  .cursor{animation:none !important; opacity:.8;}
-}
-  </style>
+body.photos-mode #openGiftBtn{display:none !important;}
+</style>
 </head>
 <body>
   <div class="aurora"></div>
   <div class="stars"></div>
+
+  <div class="cuteFx" aria-hidden="true">
+    <div class="float" style="--x:12%;--d:14s;--r:-8deg;animation-delay:-2s;"><div class="heart"></div></div>
+    <div class="float" style="--x:24%;--d:16s;--r:10deg;animation-delay:-8s;"><div class="heart"></div></div>
+    <div class="float" style="--x:36%;--d:15s;--r:-18deg;animation-delay:-5s;"><div class="heart"></div></div>
+    <div class="float" style="--x:58%;--d:17s;--r:22deg;animation-delay:-11s;"><div class="heart"></div></div>
+    <div class="float" style="--x:78%;--d:15s;--r:-6deg;animation-delay:-7s;"><div class="heart"></div></div>
+
+    <div class="float" style="--x:18%;--d:18s;--r:14deg;animation-delay:-4s;">
+      <div class="bow"><span class="knot"></span></div>
+    </div>
+    <div class="float" style="--x:66%;--d:19s;--r:-12deg;animation-delay:-10s;">
+      <div class="bow"><span class="knot"></span></div>
+    </div>
+    <div class="float" style="--x:88%;--d:20s;--r:6deg;animation-delay:-13s;">
+      <div class="bow"><span class="knot"></span></div>
+    </div>
+
+    <div class="float" style="--x:42%;--d:10s;--r:0deg;animation-delay:-1s;"><div class="spark"></div></div>
+    <div class="float" style="--x:52%;--d:12s;--r:0deg;animation-delay:-6s;"><div class="spark"></div></div>
+    <div class="float" style="--x:74%;--d:11s;--r:0deg;animation-delay:-9s;"><div class="spark"></div></div>
+  </div>
+
   <canvas id="fx" aria-hidden="true"></canvas>
 
   <div class="wrap">
@@ -413,7 +454,7 @@ img{image-orientation: from-image;}
 
           <div class="actions">
             <button class="primary" id="boomBtn">Запустить конфетти ✨</button>
-            <a class="btn" href="#photos">Открыть подарок ↗</a>
+            <a class="btn" id="openGiftBtn" href="#photos">Открыть подарок ↗</a>
           </div>
         </div>
 
@@ -426,11 +467,11 @@ img{image-orientation: from-image;}
             </p>
 
             <div class="type" aria-live="polite">
-              <span class="sr-only">Поздравление печатается:</span>
-              <span id="typed"></span><span class="cursor"></span>
+              <span id="typed">Желаю тебе счастья, крепчайшего здоровья, море любви, бесконечной удачи, нескончаемого вдохновления, как можно больше 5‑ти тысячных купюр в твоем кошельке, меньше стресса и много секса!</span><span class="cursor"></span>
             </div>
 
             <div class="footer">
+              <div></div>
               <div></div>
             </div>
           </div>
@@ -446,13 +487,8 @@ img{image-orientation: from-image;}
                   </linearGradient>
                   <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="6" result="blur"/>
-                    <feColorMatrix in="blur" type="matrix"
-                      values="1 0 0 0 0
-                              0 1 0 0 0
-                              0 0 1 0 0
-                              0 0 0 1 0" result="colored"/>
                     <feMerge>
-                      <feMergeNode in="colored"/>
+                      <feMergeNode in="blur"/>
                       <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                   </filter>
@@ -460,7 +496,6 @@ img{image-orientation: from-image;}
 
                 <path d="M160 18 C150 35, 170 35, 160 18 Z" fill="url(#g1)" filter="url(#glow)"/>
 
-                <!-- 17 candle -->
                 <g filter="url(#glow)">
                   <text x="160" y="78" text-anchor="middle"
                         font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
@@ -471,7 +506,8 @@ img{image-orientation: from-image;}
                     17
                   </text>
                 </g>
-<rect x="70" y="82" width="180" height="54" rx="18" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.22)"/>
+
+                <rect x="70" y="82" width="180" height="54" rx="18" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.22)"/>
                 <path d="M88 110 C110 128, 130 92, 152 110 C174 128, 194 92, 216 110"
                       stroke="url(#g1)" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
 
@@ -486,11 +522,11 @@ img{image-orientation: from-image;}
           </aside>
         </section>
 
-        
-<section id="photos" style="display:none;">
-  <div class="photosBox">
+        <section id="photos" style="display:none;">
+          <div class="photosBox">
+            <h2 class="photosTitle">📸</h2>
 
-    <div class="gridPhotos">
+            <div class="gridPhotos">
               <img data-full class="thumb" src="g1.png" alt="Фото 1" />
               <img data-full class="thumb" src="g2.png" alt="Фото 2" />
               <img data-full class="thumb" src="g3.png" alt="Фото 3" />
@@ -554,45 +590,18 @@ img{image-orientation: from-image;}
               <img data-full class="thumb" src="g62.png" alt="Фото 62" />
               <img data-full class="thumb" src="g63.png" alt="Фото 63" />
               <img data-full class="thumb" src="g64.png" alt="Фото 64" />
-              <img data-full class="thumb" src="g65.png" alt="Фото 65" />
-              <img data-full class="thumb" src="g66.png" alt="Фото 66" />
-              <img data-full class="thumb" src="g67.png" alt="Фото 67" />
-              <img data-full class="thumb" src="g68.png" alt="Фото 68" />
-              <img data-full class="thumb" src="g69.png" alt="Фото 69" />
-              <img data-full class="thumb" src="g70.png" alt="Фото 70" />
-              <img data-full class="thumb" src="g71.png" alt="Фото 71" />
-              <img data-full class="thumb" src="g72.png" alt="Фото 72" />
-              <img data-full class="thumb" src="g73.png" alt="Фото 73" />
-              <img data-full class="thumb" src="g74.png" alt="Фото 74" />
-              <img data-full class="thumb" src="g75.png" alt="Фото 75" />
-              <img data-full class="thumb" src="g76.png" alt="Фото 76" />
-              <img data-full class="thumb" src="g77.png" alt="Фото 77" />
-              <img data-full class="thumb" src="g78.png" alt="Фото 78" />
-              <img data-full class="thumb" src="g79.png" alt="Фото 79" />
-              <img data-full class="thumb" src="g80.png" alt="Фото 80" />
-              <img data-full class="thumb" src="g81.png" alt="Фото 81" />
-              <img data-full class="thumb" src="g82.png" alt="Фото 82" />
-              <img data-full class="thumb" src="g83.png" alt="Фото 83" />
-              <img data-full class="thumb" src="g84.png" alt="Фото 84" />
-              <img data-full class="thumb" src="g85.png" alt="Фото 85" />
-              <img data-full class="thumb" src="g86.png" alt="Фото 86" />
-              <img data-full class="thumb" src="g87.png" alt="Фото 87" />
-              <img data-full class="thumb" src="g88.png" alt="Фото 88" />
-              <img data-full class="thumb" src="g89.png" alt="Фото 89" />
             </div>
 
-
-    <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="#main">← Назад</a>
-    </div>
-  </div>
-</section>
+            <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+              <a class="btn" href="#main">← Назад</a>
+            </div>
+          </div>
+        </section>
 
       </div>
     </main>
   </div>
 
-  <!-- ✅ полноэкранный просмотр фото (без кнопок "Скачать" + фото видно целиком) -->
   <div id="photoModal" style="position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.78);z-index:999;padding:18px;">
     <div style="position:relative;width:min(1200px,96vw);max-height:88vh;display:grid;place-items:center;">
       <img id="photoModalImg" alt="" style="max-width:96vw;max-height:88vh;width:auto;height:auto;object-fit:contain;display:block;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);" />
@@ -600,31 +609,16 @@ img{image-orientation: from-image;}
     </div>
   </div>
 
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <div class="box">
-      <h2 id="mTitle">🎁 Сюрприз для Милы</h2>
-      <p id="mText">
-        Мила, пусть всё, что ты задумала, получается легко — а мечты находят тебя быстрее, чем ты их успеваешь придумать.
-        Сегодня можно всё: сиять, смеяться и принимать комплименты без ограничений ✨
-      </p>
-      <div class="row">
-        <button id="closeModal">Закрыть</button>
-        <button class="primary" id="fireworksNow">Фейерверк сейчас 🎆</button>
-      </div>
-    </div>
+  
   </div>
 
   <script>
     // Typed text
     const typedEl = document.getElementById('typed');
     const lines = [
-      "🎈 Желаю тебе счастья, которое не помещается в карман.",
-      "💖 Любви — тёплой, спокойной и настоящей.",
-      "🌟 Вдохновения — чтобы глаза горели.",
-      "🍀 Удачи — которая приходит вовремя.",
-      "И чтобы рядом были люди, с которыми хорошо даже молчать.",
       "",
-      "С днём рождения, Мила! 🥳"
+      "",
+      "Желаю тебе счастья, крепчайшего здоровья, море любви, бесконечной удачи, нескончаемого вдохновления, как можно больше 5‑тысячных купюр в твоём кошельке, меньше стресса и много секса! 🎉"
     ];
     let li = 0, ci = 0;
     function typeTick(){
@@ -635,21 +629,22 @@ img{image-orientation: from-image;}
         ci++;
         setTimeout(typeTick, 22 + Math.random()*28);
       } else {
+        if (openGiftBtn) openGiftBtn.style.display = '';
         li++; ci = 0;
         setTimeout(typeTick, 320);
       }
     }
     typeTick();
 
-    // Canvas FX
+    // Canvas FX (оптимизация)
     const canvas = document.getElementById('fx');
-    const ctx = canvas.getContext('2d');
-    let W=0,H=0,dpr=1;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let dpr = 1;
 
     function resize(){
       dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      W = canvas.width = Math.floor(innerWidth * dpr);
-      H = canvas.height = Math.floor(innerHeight * dpr);
+      canvas.width = Math.floor(innerWidth * dpr);
+      canvas.height = Math.floor(innerHeight * dpr);
       canvas.style.width = innerWidth + "px";
       canvas.style.height = innerHeight + "px";
       ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -669,7 +664,6 @@ img{image-orientation: from-image;}
           x, y,
           vx: rand(-6,6),
           vy: rand(-10,-3),
-          r: rand(2,4),
           w: rand(6,12),
           h: rand(8,16),
           rot: rand(0,Math.PI*2),
@@ -745,43 +739,44 @@ img{image-orientation: from-image;}
     }
     requestAnimationFrame(step);
 
-    // Interaction
+    // Interaction: ТОЛЬКО кнопка
     const boomBtn = document.getElementById('boomBtn');
+    // (опционально) модалка-сюрприз могла быть удалена — поэтому делаем безопасно
     const modal = document.getElementById('modal');
     const closeModal = document.getElementById('closeModal');
-    const fireworksNow = document.getElementById('fireworksNow');
-
-    function centerBurst(){
+    const fireworksNow = document.getElementById('fireworksNow');function centerBurst(){
       addConfettiBurst(innerWidth*0.5, innerHeight*0.35, 220);
       addFirework(innerWidth*0.5, innerHeight*0.35);
     }
 
     boomBtn.addEventListener('click', () => {
-      addConfettiBurst(innerWidth*0.5, innerHeight*0.25, 260);
-      setTimeout(()=>addConfettiBurst(innerWidth*0.25, innerHeight*0.35, 160), 120);
-      setTimeout(()=>addConfettiBurst(innerWidth*0.75, innerHeight*0.35, 160), 240);
+      addConfettiBurst(innerWidth*0.5, innerHeight*0.25, 240);
+      setTimeout(()=>addConfettiBurst(innerWidth*0.25, innerHeight*0.35, 140), 120);
+      setTimeout(()=>addConfettiBurst(innerWidth*0.75, innerHeight*0.35, 140), 240);
     });
 
-    function close(){
-      modal.classList.remove('open');
-    }
-    closeModal.addEventListener('click', close);
-    modal.addEventListener('click', (e)=>{ if(e.target === modal) close(); });
-    fireworksNow.addEventListener('click', centerBurst);
+    function close(){ if(modal) modal.classList.remove('open'); }
+    if (closeModal) closeModal.addEventListener('click', close);
+    if (modal) modal.addEventListener('click', (e)=>{ if(e.target === modal) close(); });
+    if (fireworksNow) fireworksNow.addEventListener('click', centerBurst);
 
     // Tabs
     const mainSection = document.getElementById('main');
     const photosSection = document.getElementById('photos');
 
     function renderTab(){
-      const isPhotos = location.hash === '#photos';
+      const openGiftBtn = document.getElementById('openGiftBtn');
+
+      const isPhotos = (location.hash || '').startsWith('#photos');
       if (isPhotos){
         document.body.classList.add('photos-mode');
+        if (openGiftBtn) openGiftBtn.style.display = 'none';
         mainSection.style.display = 'none';
         photosSection.style.display = 'block';
         document.body.style.overflowY = 'auto';
       } else {
         document.body.classList.remove('photos-mode');
+        if (openGiftBtn) openGiftBtn.style.display = '';
         mainSection.style.display = 'grid';
         photosSection.style.display = 'none';
         document.body.style.overflowY = 'hidden';
@@ -790,7 +785,7 @@ img{image-orientation: from-image;}
     addEventListener('hashchange', renderTab);
     renderTab();
 
-    // ✅ fullscreen photo modal
+    // fullscreen photo modal
     const photoModal = document.getElementById('photoModal');
     const photoModalImg = document.getElementById('photoModalImg');
     const photoModalClose = document.getElementById('photoModalClose');
@@ -805,21 +800,12 @@ img{image-orientation: from-image;}
     }
 
     document.querySelectorAll('img[data-full]').forEach(img=>{
-      img.addEventListener('click', ()=>{
-        openPhoto(img.getAttribute('src'));
-      });
+      img.addEventListener('click', ()=> openPhoto(img.getAttribute('src')));
     });
 
     photoModalClose.addEventListener('click', closePhoto);
     photoModal.addEventListener('click', (e)=>{ if(e.target === photoModal) closePhoto(); });
     addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closePhoto(); });
-
-    // OPTIONAL music
-    /*
-    const audio = new Audio('music.mp3');
-    audio.loop = true;
-    document.addEventListener('click', () => audio.play().catch(()=>{}), {once:true});
-    */ 
   </script>
 </body>
 </html>
