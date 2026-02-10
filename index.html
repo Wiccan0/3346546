@@ -1669,7 +1669,7 @@ body.photos-mode #photosSection{
       }
     }
 
-/* ===== ✨ /* ===== ✨ Enhancements: gentle reveal + riddle interactions + cake pulse ===== */
+/* ===== ✨ Enhancements: gentle reveal + riddle interactions + cake pulse ===== */
 .reveal{ opacity:1; transform:none; filter:none; }
 .reveal.is-on{ animation: revealIn .65s cubic-bezier(.18,.9,.2,1) both; }
 @keyframes revealIn{
@@ -1713,9 +1713,6 @@ body.photos-mode #photosSection{
   65%{ transform: scale(0.997); }
   100%{ transform: scale(1); }
 }
-  45%{ transform: scale(1.01); }
-  100%{ transform: scale(1); }
-}
 
 .riddleHint[hidden]{ display:none !important; }
 .riddleHint{
@@ -1743,11 +1740,6 @@ body.photos-mode #photosSection{
   60%{ transform: translateY(-4px) scale(1.005); }
   100%{ transform: translateY(0) scale(1); }
 }
-  20%{ transform: translateY(-8px) scale(1.01); }
-  40%{ transform: translateY(0) scale(1); }
-  60%{ transform: translateY(-4px) scale(1.005); }
-  100%{ transform: translateY(0) scale(1); }
-}
 
 /* Cake pulse when music starts */
 .cakePulse svg{
@@ -1762,10 +1754,6 @@ body.photos-mode #photosSection{
   35%{ transform: scale(1.035); filter: drop-shadow(0 0 34px rgba(77,247,255,.18)); }
   70%{ transform: scale(0.995); filter: drop-shadow(0 0 26px rgba(255,79,216,.14)); }
   100%{ transform: scale(1); filter: drop-shadow(0 0 22px rgba(77,247,255,.12)); }
-}
-  35%{ transform: scale(1.02); filter: drop-shadow(0 0 26px rgba(77,247,255,.28)); }
-  70%{ transform: scale(0.998); filter: drop-shadow(0 0 22px rgba(255,79,216,.10)); }
-  100%{ transform: scale(1); filter: drop-shadow(0 0 20px rgba(77,247,255,.10)); }
 }
 
 /* Photo modal: soften image entrance */
@@ -2681,7 +2669,7 @@ body.photos-mode #photosSection{
   }
 
   // Riddle: tap -> tiny pulse, long-press -> show subtle hint (still no answer)
- -> tiny pulse, long-press -> show subtle hint (still no answer)
+
   if (riddle){
     riddle.addEventListener('click', ()=>{
       // unblur on first interaction
