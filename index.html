@@ -116,8 +116,8 @@
     .inner{
       position:relative;
       padding:28px 28px 26px;
-      backdrop-filter: blur(16px) saturate(190%) brightness(120%) contrast(108%);
-      -webkit-backdrop-filter: blur(16px) saturate(190%) brightness(120%) contrast(108%);
+      backdrop-filter: blur(14px) saturate(190%) brightness(120%) contrast(108%);
+      -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(120%) contrast(108%);
     }
 
     .top{
@@ -604,8 +604,8 @@ html{ scroll-behavior: smooth; }
   background: linear-gradient(180deg, rgba(0,0,0,.26), rgba(0,0,0,.18));
   border: 1px solid rgba(255,255,255,.16);
   box-shadow: 0 24px 90px rgba(0,0,0,.55);
-  backdrop-filter: blur(18px) saturate(190%) brightness(120%) contrast(108%);
-  -webkit-backdrop-filter: blur(18px) saturate(190%) brightness(120%) contrast(108%);
+  backdrop-filter: blur(15px) saturate(190%) brightness(120%) contrast(108%);
+  -webkit-backdrop-filter: blur(15px) saturate(190%) brightness(120%) contrast(108%);
   overflow: hidden;
   transform-origin: 50% 100%;
 }
@@ -830,8 +830,8 @@ html{ scroll-behavior: smooth; }
   background: linear-gradient(180deg, var(--ply-glass), var(--ply-glass2));
   border: 1px solid var(--ply-border);
   box-shadow: 0 28px 110px var(--ply-shadow);
-  backdrop-filter: blur(20px) saturate(190%) brightness(120%) contrast(108%);
-  -webkit-backdrop-filter: blur(20px) saturate(190%) brightness(120%) contrast(108%);
+  backdrop-filter: blur(14px) saturate(190%) brightness(120%) contrast(108%);
+  -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(120%) contrast(108%);
   overflow: hidden;
 }
 
@@ -1638,6 +1638,19 @@ body.photos-mode #photosSection{
 .iosTitle{ font-size: 17px; }
 
     .riddle{
+  transition: filter .22s ease, opacity .22s ease;
+}
+
+.riddle.blurred{
+  filter: blur(7px);
+  opacity: .78;
+}
+.riddle.is-clear{
+  filter: none;
+  opacity: 1;
+}
+
+.riddle{
       text-align: center;
       margin: 2px 0 14px;
       font-size: 15px;
@@ -1657,8 +1670,8 @@ body.photos-mode #photosSection{
     }
 
 /* ===== ✨ /* ===== ✨ Enhancements: gentle reveal + riddle interactions + cake pulse ===== */
-.reveal{ opacity:0; transform: translateY(18px) scale(.985); filter: blur(.15px); will-change: opacity, transform; }
-.reveal.is-on{ opacity:1; transform: translateY(0) scale(1); filter:none; animation: revealIn .65s cubic-bezier(.18,.9,.2,1) both; }
+.reveal{ opacity:1; transform:none; filter:none; }
+.reveal.is-on{ animation: revealIn .65s cubic-bezier(.18,.9,.2,1) both; }
 @keyframes revealIn{
   from{ opacity:0; transform: translateY(12px) scale(.995); }
   to{ opacity:1; transform: translateY(0) scale(1); }
@@ -1704,6 +1717,7 @@ body.photos-mode #photosSection{
   100%{ transform: scale(1); }
 }
 
+.riddleHint[hidden]{ display:none !important; }
 .riddleHint{
   display: block;
   margin-top: 10px;
@@ -1716,10 +1730,32 @@ body.photos-mode #photosSection{
   transform: translateY(0);
 }
 
+/* Cake bounce (only when music plays) */
+.cake.is-playing svg{
+  animation: cakeBounce 1.6s ease-in-out infinite;
+  transform-origin: 50% 72%;
+  will-change: transform;
+}
+@keyframes cakeBounce{
+  0%{ transform: translateY(0) scale(1); }
+  20%{ transform: translateY(-8px) scale(1.01); }
+  40%{ transform: translateY(0) scale(1); }
+  60%{ transform: translateY(-4px) scale(1.005); }
+  100%{ transform: translateY(0) scale(1); }
+}
+  20%{ transform: translateY(-8px) scale(1.01); }
+  40%{ transform: translateY(0) scale(1); }
+  60%{ transform: translateY(-4px) scale(1.005); }
+  100%{ transform: translateY(0) scale(1); }
+}
+
 /* Cake pulse when music starts */
 .cakePulse svg{
   animation: cakePulse 1.2s cubic-bezier(.18,.9,.2,1) both;
-  transform-origin: 50% 70%;
+  transform-origin: 50% 72%;
+}
+.cake.is-playing.cakePulse svg{
+  animation: cakeBounce 1.6s ease-in-out infinite, cakePulse 1.2s cubic-bezier(.18,.9,.2,1) both;
 }
 @keyframes cakePulse{
   0%{ transform: scale(1); filter: drop-shadow(0 0 18px rgba(77,247,255,.10)); }
@@ -1747,6 +1783,7 @@ body.photos-mode #photosSection{
   .reveal, .reveal.is-on{ opacity:1 !important; transform:none !important; animation:none !important; }
   .riddle.pulse{ animation:none !important; }
   .cakePulse svg{ animation:none !important; }
+  .cake svg{ animation:none !important; }
   #photoModalImg{ transition:none !important; transform:none !important; opacity:1 !important; }
 }
 
@@ -1892,7 +1929,7 @@ body.photos-mode #photosSection{
             </div>
           
 
-        <div class="riddle reveal" id="riddle">
+        <div class="riddle reveal blurred" id="riddle" tabindex="0" role="button" aria-label="Показать загадку">
           <p>
             В моём нутре всё кипит и бурлит,<br>
             Но холодна моя стальная дверца.<br>
@@ -2036,6 +2073,7 @@ body.photos-mode #photosSection{
   <script>
     // Typed text
     const typedEl = document.getElementById('typed');
+    const openGiftBtn = document.getElementById('openGiftBtn');
     let openGiftBtnEl = document.getElementById('openGiftBtn');
     const lines = [
       "",
@@ -2078,9 +2116,30 @@ body.photos-mode #photosSection{
     const sparks = [];
     const gravity = 0.08;
 
+    let running = false;
+    let rafId = 0;
+    let lastActivity = performance.now();
+
+    function startLoop(){
+      if(running) return;
+      running = true;
+      rafId = requestAnimationFrame(step);
+    }
+    function stopLoop(){
+      running = false;
+      if(rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      // clear canvas when idle
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+
     function rand(min,max){ return min + Math.random()*(max-min); }
 
-    function addConfettiBurst(x,y,amount=100){
+    function addConfettiBurst(x,y,amount=60){
+      lastActivity = performance.now();
+      // cap particle count to keep it smooth on ПК/телефоне
+      if(confetti.length > 420) confetti.splice(0, confetti.length - 420);
+      if(sparks.length > 180) sparks.splice(0, sparks.length - 180);
       for(let i=0;i<amount;i++){
         confetti.push({
           x, y,
@@ -2155,11 +2214,16 @@ body.photos-mode #photosSection{
 
         if(s.life<=0) sparks.splice(i,1);
       }
-
       ctx.globalAlpha = 1;
-      requestAnimationFrame(step);
+
+      // stop rendering when nothing is happening (saves CPU/GPU)
+      const now = performance.now();
+      if(confetti.length === 0 && sparks.length === 0 && (now - lastActivity) > 800){
+        stopLoop();
+        return;
+      }
+      rafId = requestAnimationFrame(step);
     }
-    requestAnimationFrame(step);
 
     // Interaction: ТОЛЬКО кнопка
     const boomBtn = document.getElementById('boomBtn');
@@ -2168,11 +2232,15 @@ body.photos-mode #photosSection{
     const closeModal = document.getElementById('closeModal');
     const fireworksNow = document.getElementById('fireworksNow');function centerBurst(){
       addConfettiBurst(innerWidth*0.5, innerHeight*0.35, 220);
+      startLoop();
       addFirework(innerWidth*0.5, innerHeight*0.35);
     }
 
     boomBtn.addEventListener('click', () => {
+      lastActivity = performance.now();
+      startLoop();
       addConfettiBurst(innerWidth*0.5, innerHeight*0.25, 140);
+      startLoop();
       setTimeout(()=>addConfettiBurst(innerWidth*0.25, innerHeight*0.35, 80), 120);
       setTimeout(()=>addConfettiBurst(innerWidth*0.75, innerHeight*0.35, 80), 240);
     });
@@ -2241,7 +2309,8 @@ body.photos-mode #photosSection{
     photoModalClose.addEventListener('click', closePhoto);
     photoModal.addEventListener('click', (e)=>{ if(e.target === photoModal) closePhoto(); });
     addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closePhoto(); });
-  </script>
+  
+</script>
 
 <script>
   // 🔀 Random shuffle photos
@@ -2335,7 +2404,7 @@ body.photos-mode #photosSection{
 
 <script>
 (function(){
-  const audio = document.getElementById('bgMusic');
+    const audio = document.getElementById('bgMusic');
   const player = document.getElementById('iosPlayer');
 
   const playBtn = document.getElementById('iosPlay');
@@ -2344,6 +2413,13 @@ body.photos-mode #photosSection{
 
   const iconPlay = document.getElementById('iosIconPlay');
   const iconPause = document.getElementById('iosIconPause');
+
+  function setCakePlaying(on){
+    const cake = document.querySelector('.cake');
+    if (!cake) return;
+    cake.classList.toggle('is-playing', !!on);
+  }
+
   const volOn = document.getElementById('iosVolOn');
   const volOff = document.getElementById('iosVolOff');
 
@@ -2391,6 +2467,7 @@ body.photos-mode #photosSection{
   }
 
   async function play(){
+    setCakePlaying(true);
     try{
       audio.volume = (Number(vol.value) || 55) / 100;
       const p = audio.play();
@@ -2403,6 +2480,7 @@ body.photos-mode #photosSection{
   }
 
   function pause(){
+    setCakePlaying(false);
     audio.pause();
     setPlayingUI(false);
   }
@@ -2529,6 +2607,12 @@ body.photos-mode #photosSection{
         try{ if (typeof window.launchConfetti === 'function') window.launchConfetti(); }catch{}
         launchConfetti();
       }, {passive:true});
+
+    audio.addEventListener('pause', ()=> setPlaying(false), {passive:true});
+    audio.addEventListener('ended', ()=> setPlaying(false), {passive:true});
+
+    // sync initial playing state
+    setPlaying(!audio.paused && !audio.ended);
     });
   }
 
@@ -2542,23 +2626,25 @@ body.photos-mode #photosSection{
 (function(){
   const cake = document.querySelector('.cake');
   const riddle = document.getElementById('riddle');
-  const riddleHint = document.getElementById('riddleHint');
+  const riddleHint = document.getElementById('riddleHint'); // now always visible
   const audio = document.getElementById('bgMusic');
 
   // Gentle staged reveal on first load
   function reveal(){
     const items = [cake, riddle].filter(Boolean);
-    // ensure base class exists
-    items.forEach(el=>{ if(!el.classList.contains('reveal')) el.classList.add('reveal'); });
 
     // if we're on photos tab, don't run reveal (elements hidden)
     const isPhotos = (location.hash || '').startsWith('#photos');
     if (isPhotos) return;
 
     // restart animation cleanly
-    items.forEach(el=> el.classList.remove('is-on'));
+    items.forEach(el=>{
+      el.classList.remove('is-on');
+      // force reflow so animation can restart
+      void el.offsetWidth;
+    });
     items.forEach((el, i)=>{
-      setTimeout(()=> el.classList.add('is-on'), 240 + i*220);
+      setTimeout(()=> el.classList.add('is-on'), 180 + i*220);
     });
   }
 
@@ -2574,51 +2660,71 @@ body.photos-mode #photosSection{
   // Cake pulse once when music starts (first play only per session)
   let pulsed = false;
   if (audio && cake){
+    const setPlaying = (on)=> cake.classList.toggle('is-playing', !!on);
+    const sync = ()=> setPlaying(!audio.paused && !audio.ended);
+
+    // keep state in sync for native controls + keyboard + programmatic pauses
+    ['play','pause','ended','seeking','seeked','ratechange','timeupdate'].forEach(ev=>{
+      audio.addEventListener(ev, sync, {passive:true});
+    });
+
+    // one-time "breath" when music starts (first play only per session)
     audio.addEventListener('play', ()=>{
       if (pulsed) return;
       pulsed = true;
       cake.classList.add('cakePulse');
       setTimeout(()=> cake.classList.remove('cakePulse'), 1400);
     }, {passive:true});
+
+    // initial state
+    sync();
   }
 
   // Riddle: tap -> tiny pulse, long-press -> show subtle hint (still no answer)
+ -> tiny pulse, long-press -> show subtle hint (still no answer)
   if (riddle){
     riddle.addEventListener('click', ()=>{
+      // unblur on first interaction
+      riddle.classList.add('is-clear');
+      riddle.classList.remove('blurred');
+
+      // pulse feedback (no spoilers)
       riddle.classList.remove('pulse');
-      // restart animation
       void riddle.offsetWidth;
       riddle.classList.add('pulse');
     });
+  }
+})();
+</script>
 
-    let t = null;
-    const LONG_MS = 650;
+<script>
+/* ===== Riddle unblur failsafe ===== */
+(function(){
+  function bind(){
+    const r = document.getElementById('riddle');
+    if(!r) return;
+    // Ensure it's clickable
+    r.style.cursor = 'pointer';
 
-    function onDown(){
-      if (!riddleHint) return;
-      clearTimeout(t);
-      t = setTimeout(()=>{
-        const turningOn = !riddleHint.classList.contains('on');
-        if (turningOn){
-          riddleHint.hidden = false;
-          // next frame so transitions apply
-          requestAnimationFrame(()=> riddleHint.classList.add('on'));
-        }else{
-          riddleHint.classList.remove('on');
-          // hide after transition
-          setTimeout(()=>{ riddleHint.hidden = true; }, 220);
-        }
-      }, LONG_MS);
-    }
-    function onUp(){
-      clearTimeout(t);
-      t = null;
-    }
+    const unblur = ()=>{
+      r.classList.add('is-clear');
+      r.classList.remove('blurred');
+      // hard override in case CSS specificity clashes
+      r.style.filter = 'none';
+      r.style.opacity = '1';
+    };
 
-    riddle.addEventListener('pointerdown', onDown, {passive:true});
-    riddle.addEventListener('pointerup', onUp, {passive:true});
-    riddle.addEventListener('pointercancel', onUp, {passive:true});
-    riddle.addEventListener('pointerleave', onUp, {passive:true});
+    r.addEventListener('click', unblur, {passive:true});
+    r.addEventListener('pointerdown', unblur, {passive:true});
+    r.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' ') unblur();
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bind, {once:true});
+  }else{
+    bind();
   }
 })();
 </script>
